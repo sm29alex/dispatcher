@@ -27,6 +27,7 @@ public class QueuePrintImpl implements QueuePrint{
     @Override
     public void put(Document document) {
         try {
+            System.out.println("Put document " + document);
             documents.put(document);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -35,16 +36,17 @@ public class QueuePrintImpl implements QueuePrint{
 
     @Override
     public boolean remove(Document document) {
-        return documents.remove(document);
+        boolean bool = documents.remove(document);
+        if (bool)
+            System.out.println("Remove document " + document);
+        else
+            System.out.println("Can not remove document " + document);
+        return bool;
     }
 
     @Override
     public BlockingQueue<Document> getDocuments() {
         return documents;
-    }
-
-    public void printQueue() {
-        printQueue("default");
     }
 
     @Override
@@ -56,8 +58,10 @@ public class QueuePrintImpl implements QueuePrint{
             case "exp" : Collections.sort(list, DocumentComparators.comparatorByExpansion); break;
         }
         System.out.println("Print documents in Queue : ");
-        for(Document document : list) {
-            System.out.println(document);
+        synchronized (this) {
+            for (Document document : list) {
+                System.out.println(document);
+            }
         }
     }
 }

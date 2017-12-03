@@ -35,6 +35,7 @@ public class DispatcherImplTest {
         queuePrint.put(new Document(TypeOfDocument.TYPE_0));
         queuePrint.put(new Document(TypeOfDocument.TYPE_1));
 
+        dispatcher.start();
     }
 
     @After
@@ -45,7 +46,6 @@ public class DispatcherImplTest {
     @Test
     public void startAndStop (){
         assertEquals(dispatcher.getCurrentList().size(), 2);
-        dispatcher.start();
         while (dispatcher.getCurrentList().size() != 0){}
         try {
             Thread.sleep(500);
@@ -55,27 +55,26 @@ public class DispatcherImplTest {
         assertEquals(dispatcher.getCurrentList().size(), 0);
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 20000)
     public void putAndRemove() {
-        assertEquals(dispatcher.getCurrentList().size(), 2);
         Document document2 = new Document(TypeOfDocument.TYPE_2);
         Document document3 = new Document(TypeOfDocument.TYPE_3);
+        dispatcher.printCurrentList("exp");
         dispatcher.put(document2);
-        dispatcher.printCurrentList("size");
-        assertEquals(dispatcher.getCurrentList().size(), 3);
         dispatcher.put(document3);
+        dispatcher.printCurrentList("size");
         dispatcher.printCurrentList("time");
-        assertEquals(dispatcher.getCurrentList().size(), 4);
+        dispatcher.remove(document3);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         dispatcher.remove(document2);
-        assertEquals(dispatcher.getCurrentList().size(), 3);
-        dispatcher.remove(document3);
-        assertEquals(dispatcher.getCurrentList().size(), 2);
-        dispatcher.remove(document3);
-        assertEquals(dispatcher.getCurrentList().size(), 2);
         dispatcher.printCurrentList("default");
         while (dispatcher.getCurrentList().size() != 0){}
         try {
-            Thread.sleep(500);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -85,10 +84,8 @@ public class DispatcherImplTest {
 
     @Test
     public void averageTimePrint() throws Exception {
-        dispatcher.start();
         while (dispatcher.getCurrentList().size() != 0){}
         Thread.sleep(500);
-        dispatcher.stop();
         System.out.println(dispatcher.averageTimePrint());
     }
 

@@ -15,11 +15,13 @@ public class DispatcherImpl implements Dispatcher {
     private final ArchivePrint archivePrint;
 
     public void start(){
-        threadPrint.start();
+        if (threadPrint.getState() == Thread.State.NEW)
+            threadPrint.start();
     }
 
     @Override
     public void stop() {
+        System.out.println("Stop");
         if (threadPrint.getState() == Thread.State.RUNNABLE)
             threadPrint.interrupt();
     }
@@ -42,7 +44,6 @@ public class DispatcherImpl implements Dispatcher {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-
                     try {
                         while (true) {
                             Document document = queuePrint.getDocuments().peek();
