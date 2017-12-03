@@ -50,5 +50,19 @@ public class Document {
         return name;
     }
 
+    public SizeOfPaper getSizeOfPaper() {
+        return typeOfDocument.getSizeOfPaper();
+    }
 
+    public Expansion getExpansion() {
+        return typeOfDocument.getExpansion();
+    }
+
+    @Override
+    public String toString() {
+        return "Document{" +
+                "name='" + name + '\'' +
+                ", typeOfDocument=" + typeOfDocument +
+                '}';
+    }
 }

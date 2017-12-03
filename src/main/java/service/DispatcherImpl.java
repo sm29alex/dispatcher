@@ -4,6 +4,7 @@ import model.Document;
 import repository.ArchivePrint;
 import repository.QueuePrint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DispatcherImpl implements Dispatcher {
@@ -12,6 +13,10 @@ public class DispatcherImpl implements Dispatcher {
 
     private final QueuePrint queuePrint;
     private final ArchivePrint archivePrint;
+
+    public void start(){
+        threadPrint.start();
+    }
 
     @Override
     public void stop() {
@@ -29,7 +34,7 @@ public class DispatcherImpl implements Dispatcher {
         return queuePrint.remove(document);
     }
 
-    public DispatcherImpl(final QueuePrint queuePrint, ArchivePrint archivePrint) {
+    public DispatcherImpl(final QueuePrint queuePrint, final ArchivePrint archivePrint) {
 
         this.queuePrint = queuePrint;
         this.archivePrint = archivePrint;
@@ -40,7 +45,9 @@ public class DispatcherImpl implements Dispatcher {
 
                     try {
                         while (true) {
+                            Document document = queuePrint.getDocuments().peek();
                             queuePrint.print();
+                            archivePrint.addDocumentToArchive(document);
                         }
                     } catch (InterruptedException e) {
                         System.out.println("Stop");
@@ -49,16 +56,28 @@ public class DispatcherImpl implements Dispatcher {
         };
 
         this.threadPrint = new Thread(runnable);
-        this.threadPrint.start();
     }
 
     @Override
     public int averageTimePrint() {
+        int size = archivePrint.getArchiveList().size();
+        if (size > 0)
+            return (int) ((archivePrint.getDocumentById(size-1).getEndTime().getTime() - archivePrint.getDocumentById(0).getStartTime().getTime()) / size);
         return 0;
     }
 
     @Override
     public List<Document> getPrintedDocument() {
         return archivePrint.getArchiveList();
+    }
+
+    @Override
+    public List<Document> getCurrentList() {
+        return new ArrayList<>(queuePrint.getDocuments());
+    }
+
+    @Override
+    public void printCurrentList(String orderBy) {
+        queuePrint.printQueue(orderBy);
     }
 }

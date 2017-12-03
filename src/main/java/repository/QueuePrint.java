@@ -7,12 +7,13 @@ import java.util.concurrent.BlockingQueue;
 
 public interface QueuePrint {
 
-    public void print() throws InterruptedException;
+    void print() throws InterruptedException;
 
-    public void put(Document document);
+    void put(Document document);
 
-    public boolean remove(Document document);
+    boolean remove(Document document);
 
-    public BlockingQueue<Document> getDocuments();
+    BlockingQueue<Document> getDocuments();
 
+    void printQueue(String orderby);
 }

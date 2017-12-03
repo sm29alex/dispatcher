@@ -1,9 +1,9 @@
 package repository;
 
 import model.Document;
+import util.DocumentComparators;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
 public class QueuePrintImpl implements QueuePrint{
@@ -41,5 +41,23 @@ public class QueuePrintImpl implements QueuePrint{
     @Override
     public BlockingQueue<Document> getDocuments() {
         return documents;
+    }
+
+    public void printQueue() {
+        printQueue("default");
+    }
+
+    @Override
+    public void printQueue(String orderBy){
+        List<Document> list = new ArrayList<>(documents);
+        switch (orderBy){
+            case "size" : Collections.sort(list, DocumentComparators.comparatorBySizeOfPrint); break;
+            case "time" : Collections.sort(list, DocumentComparators.comparatorByTimePrint); break;
+            case "exp" : Collections.sort(list, DocumentComparators.comparatorByExpansion); break;
+        }
+        System.out.println("Print documents in Queue : ");
+        for(Document document : list) {
+            System.out.println(document);
+        }
     }
 }

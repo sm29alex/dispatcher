@@ -20,4 +20,21 @@ public class TypeOfDocument {
     public long getTimePrint() {
         return timePrint.getTimePrint();
     }
+
+    public SizeOfPaper getSizeOfPaper() {
+        return sizeOfPaper;
+    }
+
+    public Expansion getExpansion() {
+        return expansion;
+    }
+
+    @Override
+    public String toString() {
+        return "TypeOfDocument{" +
+                "timePrint=" + timePrint +
+                ", sizeOfPaper=" + sizeOfPaper +
+                ", expansion=" + expansion +
+                '}';
+    }
 }
